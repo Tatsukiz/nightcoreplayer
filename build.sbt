@@ -1,8 +1,16 @@
 lazy val commonSettings = Seq(
   version := "1.0.0-SNAPSHOT",
   organization := "jp.ed.nnn",
-  scalaVersion := "2.12.8"
+  scalaVersion := "2.12.8",
+  test in assembly := {}
 )
+
+lazy val app = (project in file(".")).
+  settings(commonSettings: _*).
+  settings(
+  mainClass in assembly := Some("jp.ed.nnn.nightcoreplayer.Main"),
+  assemblyJarName in assembly := "nightcoreplayer.jar"
+  )
 
 val osName: SettingKey[String] = SettingKey[String]("osName")
 
@@ -20,5 +28,7 @@ libraryDependencies += "org.openjfx" % "javafx-graphics" % "11-ea+25" classifier
 libraryDependencies += "org.openjfx" % "javafx-web" % "11-ea+25" classifier osName.value
 libraryDependencies += "org.openjfx" % "javafx-media" % "11-ea+25" classifier osName.value
 
-name := "nightcoreplayer"
-version := "0.1"
+assemblyMergeStrategy in assembly := {
+  case PathList("module-info.class") => MergeStrategy.first
+  case x => (assemblyMergeStrategy in assembly).value(x)
+  }
